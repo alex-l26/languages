@@ -195,3 +195,4 @@ a.out
 /cobol/hello
 .idea
 *.xcodeproj
+haskell/.DS_Store
