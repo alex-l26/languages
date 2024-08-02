@@ -76,11 +76,57 @@ carPosition t = cos t
 carVelocity :: Time -> Velocity
 carVelocity =  derivative 0.01 carPosition
 
-carVelocityAnyalytic :: Time -> Velocity
-carVelocityAnyalytic t = -sin t
+carVelocityAnalylytic :: Time -> Velocity
+carVelocityAnalylytic t = -sin t
+
+-- Close but not equal 
+    -- carVelocity 2 = -0.9092936380911187
+    -- carVelocityAnalytic 2 = -0.9092974268256817
 
 velFromPos :: R              --dt
     -> (Time -> Position)    --position function
     -> (Time -> Velocity)    --VelocityFunction
 velFromPos dt x = derivative dt x
- 
+  
+--Constant Velocity
+positionCV :: Position -> Velocity -> Time -> Position -- CV -> constant velocity
+positionCV x0 v0 t = v0 * t + x0
+
+--Modelling Acceleration
+type Acceleration = R
+accFromVel :: R                --dt
+    -> (Time -> Velocity)      --velocity function
+    -> (Time -> Acceleration) --acceleration function
+accFromVel = derivative
+
+--Constant Acceleration
+velocityCA :: Velocity -> Acceleration -> Time -> Velocity
+velocityCA v0 a0 t = a0 * t + v0 
+
+positionCA :: Position -> Velocity -> Acceleration -> Time -> Position
+positionCA x0 v0 a0 t = a0 * t**2 / 2 + v0 * t + x0
+
+--Exercises 
+
+--4.1
+f4_1 x = x**2 / 2
+--derivative 10 f4_1 2  = 2
+--derivative 1 f4_1 2   = 2
+--derivative 0.1 f4_1 2 = 1.9999999999999996
+-- 0.1 does not have an exact binary representation so does not return exactly 2
+
+--4.2
+f4_2 x = x ** 3
+analyticDf4_2 x = 3 * x ** 2
+errorf4_2 a x =  derivative a f4_2 x - analyticDf4_2 x
+-- error 0.1 = 0.0025 (2.5e-3), 1 = 0.25, 5 = 6.25 10 = 25,
+-- error = a ** 2 / 4 where a is the derivative value
+-- x = 4, analyticDf4_2 x = 48 -> for error = 0.001, a = sqrt(4 * 0.001) = 6.324555320336758e-2
+-- x=0.1, analyticDf4_2 = 0.03 -> for error = 0.001, a is same as above
+
+--4.3
+-- for a = 0.01, error >= 0.1
+f4_3 x =  x 
+analyticDf4_3 x = 1 
+errorf4_3 a x = derivative a f4_3 x - analyticDf4_3 x
+-- just use f4_2 with a very large value of x to get a big error 
