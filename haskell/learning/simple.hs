@@ -130,3 +130,80 @@ f4_3 x =  x
 analyticDf4_3 x = 1 
 errorf4_3 a x = derivative a f4_3 x - analyticDf4_3 x
 -- just use f4_2 with a very large value of x to get a big error 
+
+--4.4
+--values of t around axis
+--values between axis and not small 
+
+--4.5
+pos1 :: Time -> Position
+pos1 t = if t < 0 
+    then 0
+    else 5 * t**2 
+
+vel1Analytic :: Time -> Velocity
+vel1Analytic t = if t < 0
+    then 0 
+    else 10 * t 
+
+acc1Analytic :: Time -> Acceleration
+acc1Analytic t = if t < 0
+    then 0
+    else 10
+
+vel1Numerical :: Time -> Velocity
+vel1Numerical t = derivative 0.01 pos1 t
+
+acc1Numerical :: Time -> Acceleration
+acc1Numerical t = derivative 0.01 vel1Numerical t
+
+--Lists
+
+--e.g
+physicists :: [String]
+physicists = ["Einstein" , "Newton" , "Maxwell"]
+velocities :: [R]
+velocities = [0 , -9.8 , -29.6 , -29.4]
+-- velocities !! 0 = 0 etc
+moreVelocities :: [R]
+moreVelocities = [-39.2 , -49]
+--Concanation -> velocities ++ moreVelocities
+-- this one works as they have the same type
+shortWords :: [String]
+shortWords = ["am" , "I" , "to"]
+--concat [shortWords , physicists , shortWords] = ["am","I","to","Einstein","Newton","Maxwell","am","I","to"]
+-- maintains order
+
+--Arithmetic Sequences
+ns :: [Int]
+ns = [0..10] --Integers from 0 to 10
+-- can use a different increment step by modifying the second term
+-- [-2 , -1.5 .. 1]
+
+--List Types
+--square :: R -> R
+--square x = x**2
+funcs :: [R -> R]
+funcs = [cos , square , sin]
+
+-- :t length
+--length :: Foldable t => t a -> Int    ->> complicated type (type class)
+
+--List Comprehensions
+ts :: [R]
+ts = [0 , 0.1 .. 6] 
+--Recall yRock30 function from before
+--We can use yRock30 and apply it to ts to create a list of positions
+xs :: [R]
+xs = [yRock30 t | t <- ts]
+
+--Sum and Products
+--With list comprehensions can mimic sigma and pi notation
+-- sum [f(i) | i <- [m ..n ]]
+-- product [f(i) | i <- [m .. n]]
+
+--Infinite lists
+--[n..]
+--Computer will continually generate numbers if you type in an infite list
+--Take function is useful when dealing with infinite lists, particularly when combined with other functions
+-- take 10 (cycle [4 , 7 , 8])
