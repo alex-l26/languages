@@ -167,7 +167,7 @@ velocities = [0 , -9.8 , -29.6 , -29.4]
 -- velocities !! 0 = 0 etc
 moreVelocities :: [R]
 moreVelocities = [-39.2 , -49]
---Concanation -> velocities ++ moreVelocities
+--Concatenation -> velocities ++ moreVelocities
 -- this one works as they have the same type
 shortWords :: [String]
 shortWords = ["am" , "I" , "to"]
@@ -207,3 +207,95 @@ xs = [yRock30 t | t <- ts]
 --Computer will continually generate numbers if you type in an infite list
 --Take function is useful when dealing with infinite lists, particularly when combined with other functions
 -- take 10 (cycle [4 , 7 , 8])
+
+--List Constructors
+-- 3 : [4 , 5] == [3 , 4 , 5] -> True
+--Lists are represented differently internally
+    --[13 , 6 , 4] == 13 : 6 : 4 : []
+--cons operator (:) is right associative -> x : z : _ == x : (z : _)
+
+sndItem :: [a] -> a
+sndItem ys = case ys of
+    [] -> error "Empty list has no second element"
+    (x : xs) -> if null xs
+                then error "1-item list has no second item"
+                else head xs
+-- In this x and xs are assigned locally, so only have meaning here
+
+sndItem2 :: [a] -> a
+sndItem2 [] = error "Empty list has no second element"
+sndItem2 (x : xs) = if null xs
+                    then error "1-item list has no second item"
+                    else head xs
+
+sndItem3 :: [a] -> a
+sndItem3 ys = case ys of
+                [] -> error "Empty list has no second element"
+                (x : []) -> error "1-item list has no second item"
+                (x : z : _) -> z
+
+
+--Exercises
+--5.1
+numbers5_1 :: [R]
+numbers5_1 = [-2 , -1.2 .. 2.0]
+
+--5.2
+sndItem0 :: [a] -> a
+sndItem0 xs = xs !! 1
+
+--5.3
+--Type = Int, value = 13
+
+--5.4
+f5_4 :: Int -> [Int]
+f5_4 n = [1 .. n]
+--Creates a list of all integers up to the imput
+
+--5.5
+null' :: [a] -> Bool
+null' ys = length ys < 1
+            
+
+--5.6
+last' xs = head (reverse xs)
+
+--5.7
+palindrome :: String -> Bool
+palindrome xs = if reverse xs == xs
+                then True
+                else False
+
+--5.8
+-- take 5 [9 , 1 ..]
+
+--5.11
+cycle' :: [a] -> [a]
+cycle' xs = concat (repeat xs)
+
+--5.10
+-- (a)
+--Not valid different types in list (string/int)
+-- (b)
+--not valid as different types (char/string)
+-- (c)
+--valid, type = char
+-- (d)
+--valid, type = int
+-- (e)
+--valid, type = int
+-- (f)
+-- valid, type = reverse :: [a] -> [a]
+
+--5.11
+--Because of how floating point numbers work the value may exceed a specifically given endpoint, as it is in the second example
+
+--5.12
+eulerpi m n = sum [1 / (i ** 2) | i <- [m .. n]]
+
+--5.13
+factorial n = product [i | i <- [1 .. n]]
+
+--5.14
+expList :: R -> [R]
+expList x = [(1 + x / n) ** n | n <- [1 ..]]
