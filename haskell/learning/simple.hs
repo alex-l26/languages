@@ -294,8 +294,125 @@ cycle' xs = concat (repeat xs)
 eulerpi m n = sum [1 / (i ** 2) | i <- [m .. n]]
 
 --5.13
+factorial :: Int -> Int 
 factorial n = product [i | i <- [1 .. n]]
 
 --5.14
 expList :: R -> [R]
 expList x = [(1 + x / n) ** n | n <- [1 ..]]
+
+--5.15
+expSeries :: R -> [R]
+--expSeries x = [sum [x ** m / factorial m | n <- [1..10], m <- [1 ..]]]
+expTerm :: R -> Int -> R
+expTerm x m = x ** (fromIntegral m) / fromIntegral (factorial m)
+expSeries x = scanl1 (+) (map (expTerm x) [0..])
+
+--Higher Order Functions
+springForce :: R -> R -> R
+springForce k x = -k * x
+-- higher order function as R -> R -> R == (R -> R) -> R
+
+--Digital Integration
+type Integration = (R -> R) --function
+                    -> R    --lower limit
+                    -> R    --upper limit
+                    -> R    --Result
+integral :: R -> Integration
+integral dt f a b = sum [f t * dt | t <- [a + dt / 2 , a + 3 * dt / 2 .. b - dt / 2]]
+--e.g integral 0.01 (\x -> x**2) 0 1   -- we write the anonymous fuction as its easier than writing an independant definition, this is somewhere where anonymous functions can be very useful
+
+--Implementing antiderivatives
+--because of how antiderivatives work we cannot do it similarly to how we would by hand
+--we must make a function that has an initial value
+type AntiDerivative = R         --initial value
+                    -> (R -> R) --funtion
+                    -> (R -> R) --antiderivative of function
+antiDerivative :: R -> AntiDerivative
+antiDerivative dt v0 a t = v0 + integral dt a 0 t 
+
+--we did vel from pos and acc from vel, now we can do the reverse
+
+velFromAcc :: R                       --dt
+            -> Velocity               --initial velocity
+            -> (Time -> Acceleration) --acceleration functin
+            -> (Time -> Velocity)     --velocity function
+velFromAcc dt v0 a t = antiDerivative dt v0 a t
+
+posFromVel :: R                   --dt
+            -> Position           --initial position
+            -> (Time -> Velocity) --velocity function
+            -> (Time -> Position) --position function
+posFromVel = antiDerivative
+
+--Exercises
+--6.1
+yRock :: R -> R -> R
+yRock v0 t = v0 * t - (1 / 2) * 9.81 * t ** 2
+
+vRock :: R -> R -> R
+vRock v0 t = v0 - 9.81 * t
+
+--6.2
+--take 4 :: [a] -> [a]
+
+--6.3
+--map not :: [Bool] -> [Bool]
+
+--6.4
+greaterThanOrEq7' :: Int -> Bool
+greaterThanOrEq7' n = n > 6
+
+--6.5
+f6_4 :: Int -> String -> Bool
+f6_4 n str = length str >= n 
+--The function checks if the length of the string is greatere than the integer
+
+--6.6
+f6_6 :: [a] -> Bool
+f6_6 ls = length ls > 6
+
+--6.7
+-- 'x' :: Char, a list with elements of type Char is a string
+
+--6.8
+-- map (**2) [1..1000]
+
+--6.9
+repeat' :: a -> [a]
+repeat' = iterate (\n -> n)
+
+--6.10
+replicate' :: Int -> a -> [a]
+replicate' n x = take n (repeat x)
+
+--6.11
+lsCarVel = iterate (\n -> n + 5) 0 
+
+--6.12
+map' :: (a -> b) -> [a] -> [b]
+map' (f) ls = [f x |x <- ls]
+
+--6.13
+filter' :: (a -> Bool) -> [a] -> [a]
+filter' (f) ls = [x | x <- ls, f x] 
+
+--6.14
+average :: [R] -> R
+average xs = (sum [x | x <- xs]) / (fromIntegral (length xs))
+
+--6.25 -> skip
+
+--6.16
+trapIntegrate :: Int        --number of trapezoids n
+                -> (R -> R) --function f
+                -> R        --lower limit a
+                -> R        --upper limit b
+                -> R        --result
+trapIntegrate n f a b = 
+    let 
+        h = (b - a) / fromIntegral n
+        xValues6_16 = [a + h * fromIntegral i | i <- [0..n]]
+        fxValues6_16 = map f xValues6_16
+    in
+    (h / 2) * (head fxValues6_16 + last fxValues6_16 + 2 * sum (init (tail fxValues6_16)))
